@@ -3,96 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_色彩強化版</title>
+    <title>週評鑑統計表_A4最終版</title>
     <style>
+        /* 基礎設定 */
         body {
             font-family: 'Microsoft JhengHei', sans-serif;
-            background-color: #f4f7f4;
+            background-color: #f0f0f0;
+            margin: 0;
             padding: 20px;
-            color: #333;
+            display: flex;
+            justify-content: center;
         }
-        .container {
-            max-width: 1450px;
+
+        /* A4 紙張容器設定 */
+        .a4-container {
+            width: 210mm; /* A4 標準寬度 */
+            min-height: 297mm;
+            padding: 15mm;
             margin: 0 auto;
             background-color: #fff;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
+
         h1 {
             text-align: center;
             color: #2e7d32;
-            margin-bottom: 20px;
+            margin-top: 0;
+            margin-bottom: 15px;
         }
-        .week-input {
+
+        .week-info {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-size: 1.1em;
         }
-        .week-input input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 80px;
+
+        .week-info input {
+            border: none;
+            border-bottom: 1px solid #333;
+            width: 50px;
             text-align: center;
             font-size: 14pt;
+            outline: none;
         }
+
+        /* 表格樣式 */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             table-layout: fixed;
+            page-break-inside: avoid; /* 防止列印時表格被切斷 */
         }
+
         th, td {
-            border: 1px solid #a5d6a7;
+            border: 1px solid #2e7d32;
             text-align: center;
-            padding: 12px 8px;
+            padding: 8px 4px;
             word-wrap: break-word;
+            line-height: 1.2;
         }
-        /* 標題列：深綠色 */
-        thead tr th {
+
+        /* 標題列：深綠色地圖 */
+        thead th {
             background-color: #2e7d32;
             color: white;
-            font-weight: bold;
-            font-size: 1.0em;
-            height: 45px;
+            font-size: 10pt; /* A4 寬度限制下，縮小一點標題字型 */
+            height: 40px;
         }
-        .name-header, .name-cell { width: 100px; }
-        .plan-header, .plan-cell { width: 160px; font-weight: bold; }
+
+        .name-header, .name-cell { width: 45px; }
+        .plan-header, .plan-cell { width: 95px; font-weight: bold; }
 
         /* 輸入字型大小 */
-        td[contenteditable="true"] { cursor: text; font-size: 14pt; }
-        td[contenteditable="true"]:focus { background-color: #fffde7; outline: 2px solid #2e7d32; }
+        td[contenteditable="true"] {
+            cursor: text;
+            font-size: 14pt;
+            outline: none;
+        }
 
-        /* 預計安排：白色背景，黑字 */
-        .plan-row-expect { color: #333; background-color: #ffffff; }
-        .plan-row-expect .plan-cell { background-color: #f1f8e9; color: #2e7d32; }
+        /* 第一列：預計安排 (白色) */
+        .row-expect {
+            background-color: #ffffff;
+            color: #333;
+        }
+        .row-expect .plan-cell { background-color: #ffffff; color: #2e7d32; }
 
-        /* 實際達成：非常淡的綠色背景，咖啡色字 */
-        .plan-row-actual { color: #8B4513; background-color: #f9fdf9; }
-        .plan-row-actual .plan-cell { background-color: #e8f5e9; }
+        /* 第二列：實際達成 (中淡綠，比差額淺) */
+        .row-actual {
+            background-color: #e8f5e9; /* 加深的淡綠色 */
+            color: #8B4513; /* 咖啡色文字 */
+        }
 
-        /* 差額：淡綠色背景，紅色字 */
-        .plan-row-diff { color: #d32f2f; background-color: #dcedc8; font-weight: bold; }
-        .plan-row-diff .plan-cell { background-color: #c8e6c9; }
-        
-        /* 差額欄位鎖定提示 */
-        .plan-row-diff td:not(.plan-cell) { cursor: not-allowed; font-size: 14pt; }
+        /* 第三列：差額 (中綠色，最深) */
+        .row-diff {
+            background-color: #c8e6c9; /* 最深的綠色背景 */
+            color: #d32f2f; /* 紅色文字 */
+            font-weight: bold;
+        }
+
+        /* 禁止編輯差額欄位 */
+        .row-diff td:not(.plan-cell) {
+            cursor: not-allowed;
+        }
+
+        /* 列印優化 */
+        @media print {
+            body { background: none; padding: 0; }
+            .a4-container { box-shadow: none; margin: 0; width: 100%; }
+            .no-print { display: none; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="a4-container">
     <h1>週評鑑統計表</h1>
     
-    <div class="week-input">
-        <input type="text" placeholder="____"> 月 第 <input type="text" placeholder="____"> 週
+    <div class="week-info">
+        <input type="text" placeholder="___"> 月 第 <input type="text" placeholder="___"> 週
     </div>
 
-    <div id="tables-wrapper"></div>
+    <div id="tables-content"></div>
 
     <script>
-        const wrapper = document.getElementById('tables-wrapper');
+        const content = document.getElementById('tables-content');
         
         for (let i = 1; i <= 10; i++) {
             const tableHTML = `
@@ -104,66 +140,61 @@
                             <th>參訓率<br>(8:30前)</th>
                             <th>問卷</th>
                             <th>拜訪量</th>
-                            <th>FYC合計</th>
-                            <th>FYP合計</th>
+                            <th>FYC<br>合計</th>
+                            <th>FYP<br>合計</th>
                             <th>建議書</th>
                             <th>轉介</th>
-                            <th>增員人次</th>
-                            <th>講座邀約</th>
+                            <th>增員<br>人次</th>
+                            <th>講座<br>邀約</th>
                             <th>收入目標<br>(/月)</th>
                             <th>件數<br>(/月)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="plan-row-expect">
+                        <tr class="row-expect">
                             <td class="name-cell" rowspan="3" contenteditable="true"></td>
                             <td class="plan-cell">預計安排</td>
-                            ${'<td contenteditable="true" class="input-cell" oninput="calculateTable(this)"></td>'.repeat(11)}
+                            ${'<td contenteditable="true" class="input-cell" oninput="calc(this)"></td>'.repeat(11)}
                         </tr>
-                        <tr class="plan-row-actual">
+                        <tr class="row-actual">
                             <td class="plan-cell">實際達成</td>
-                            ${'<td contenteditable="true" class="input-cell" oninput="calculateTable(this)"></td>'.repeat(11)}
+                            ${'<td contenteditable="true" class="input-cell" oninput="calc(this)"></td>'.repeat(11)}
                         </tr>
-                        <tr class="plan-row-diff">
+                        <tr class="row-diff">
                             <td class="plan-cell">差額</td>
                             ${'<td></td>'.repeat(11)}
                         </tr>
                     </tbody>
                 </table>
             `;
-            wrapper.insertAdjacentHTML('beforeend', tableHTML);
+            content.insertAdjacentHTML('beforeend', tableHTML);
         }
 
-        function calculateTable(cell) {
+        function calc(cell) {
             const table = cell.closest('table');
-            const expectRow = table.querySelector('.plan-row-expect');
-            const actualRow = table.querySelector('.plan-row-actual');
-            const diffRow = table.querySelector('.plan-row-diff');
+            const eRow = table.querySelector('.row-expect');
+            const aRow = table.querySelector('.row-actual');
+            const dRow = table.querySelector('.row-diff');
 
-            const expectInputs = Array.from(expectRow.querySelectorAll('.input-cell'));
-            const actualInputs = Array.from(actualRow.querySelectorAll('.input-cell'));
-            const diffOutputs = Array.from(diffRow.querySelectorAll('td:not(.plan-cell)'));
+            const eInputs = Array.from(eRow.querySelectorAll('.input-cell'));
+            const aInputs = Array.from(aRow.querySelectorAll('.input-cell'));
+            const dOutputs = Array.from(dRow.querySelectorAll('td:not(.plan-cell)'));
 
-            expectInputs.forEach((input, index) => {
-                let eText = input.innerText.trim();
-                let aText = actualInputs[index].innerText.trim();
+            eInputs.forEach((input, index) => {
+                let eTxt = input.innerText.trim();
+                let aTxt = aInputs[index].innerText.trim();
                 
-                let eVal = parseNum(eText);
-                let aVal = parseNum(aText);
+                let eVal = parseFloat(eTxt.replace(/[,%]/g, ''));
+                let aVal = parseFloat(aTxt.replace(/[,%]/g, ''));
 
                 if (!isNaN(eVal) || !isNaN(aVal)) {
                     let res = (eVal || 0) - (aVal || 0);
-                    let suffix = (eText.includes('%') || aText.includes('%')) ? '%' : '';
-                    diffOutputs[index].innerText = (eText === "" && aText === "") ? "" : res + suffix;
+                    let suffix = (eTxt.includes('%') || aTxt.includes('%')) ? '%' : '';
+                    dOutputs[index].innerText = (eTxt === "" && aTxt === "") ? "" : res + suffix;
                 } else {
-                    diffOutputs[index].innerText = "";
+                    dOutputs[index].innerText = "";
                 }
             });
-        }
-
-        function parseNum(str) {
-            if (!str) return NaN;
-            return parseFloat(str.replace(/[,%]/g, ''));
         }
     </script>
 </div>
