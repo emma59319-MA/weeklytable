@@ -1,9 +1,9 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_全綠標題版</title>
+    <title>週評鑑統計表_專業配色</title>
     <style>
         body {
             font-family: 'Microsoft JhengHei', sans-serif;
@@ -49,7 +49,7 @@
             padding: 12px 8px;
             word-wrap: break-word;
         }
-        /* 修正：整排標題底色改為深綠色，白字 */
+        /* 整排標題底色：深綠色，白字 */
         thead tr th {
             background-color: #2e7d32;
             color: white;
@@ -60,17 +60,18 @@
         /* 姓名欄位寬度 */
         .name-header, .name-cell {
             width: 100px;
+            color: #2e7d32;
+            font-weight: bold;
         }
-        /* 計畫欄位寬度與背景色（綠色） */
+        /* 計畫欄位寬度與背景色 */
         .plan-header, .plan-cell {
             width: 160px;
             font-weight: bold;
         }
         .plan-cell {
-            background-color: #e8f5e9; /* 側邊計畫欄位的淺綠底色 */
-            color: #2e7d32;
+            background-color: #e8f5e9;
         }
-        /* 編輯狀態設定與 14pt 字型 */
+        /* 輸入字型大小 */
         td[contenteditable="true"] {
             cursor: text;
             font-size: 14pt;
@@ -79,15 +80,15 @@
             background-color: #fffde7;
             outline: 2px solid #2e7d32;
         }
-        /* 預計安排：預設黑色文字 */
+        /* 預計安排：黑色 */
         .plan-row-expect {
             color: #333;
         }
-        /* 實際達成：文字改為咖啡色 */
+        /* 實際達成：整列改為咖啡色 (包含標籤) */
         .plan-row-actual {
-            color: #8B4513;
+            color: #8B4513; 
         }
-        /* 差額：文字改為紅色 */
+        /* 差額：整列改為紅色 (包含標籤) */
         .plan-row-diff {
             color: #d32f2f;
         }
@@ -106,7 +107,6 @@
 
     <script>
         const wrapper = document.getElementById('tables-wrapper');
-        // 生成 10 個人員的表格
         for (let i = 1; i <= 10; i++) {
             const tableHTML = `
                 <table>
@@ -138,153 +138,6 @@
                             ${'<td contenteditable="true"></td>'.repeat(11)}
                         </tr>
                         <tr class="plan-row-diff">
-                            <td class="plan-cell">差額</td>
-                            ${'<td contenteditable="true"></td>'.repeat(11)}
-                        </tr>
-                    </tbody>
-                </table>
-            `;
-            wrapper.insertAdjacentHTML('beforeend', tableHTML);
-        }
-    </script>
-</div>
-
-</body>
-</html>
-
-<html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_專業配色版</title>
-    <style>
-        body {
-            font-family: 'Microsoft JhengHei', sans-serif;
-            background-color: #f4f7f4;
-            padding: 20px;
-            color: #333;
-        }
-        .container {
-            max-width: 1450px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-radius: 8px;
-        }
-        h1 {
-            text-align: center;
-            color: #2e7d32;
-            margin-bottom: 20px;
-        }
-        .week-input {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-        .week-input input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 80px;
-            text-align: center;
-            font-size: 14pt;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 45px;
-            table-layout: fixed;
-        }
-        th, td {
-            border: 1px solid #a5d6a7;
-            text-align: center;
-            padding: 10px;
-            word-wrap: break-word;
-        }
-        /* 所有標題列：深綠色底白字 */
-        th {
-            background-color: #2e7d32;
-            color: white;
-            font-weight: bold;
-            font-size: 0.9em;
-            height: 40px;
-        }
-        /* 姓名欄位寬度 */
-        .name-cell, .name-header {
-            width: 100px;
-            font-weight: bold;
-        }
-        /* 計畫欄位寬度與背景色（綠色） */
-        .plan-cell, .plan-header {
-            width: 160px;
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            font-weight: bold;
-        }
-        /* 編輯狀態設定 */
-        td[contenteditable="true"] {
-            cursor: text;
-            font-size: 14pt;
-        }
-        td[contenteditable="true"]:focus {
-            background-color: #fff9c4; /* 點擊時顯示淡黃色高亮，方便辨識位置 */
-            outline: 2px solid #2e7d32;
-        }
-        /* 實際達成：文字改為咖啡色 */
-        .actual-text {
-            color: #8B4513; /* 咖啡色 */
-        }
-        /* 差額：文字改為紅色 */
-        .diff-text {
-            color: #d32f2f; /* 紅色 */
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>週評鑑統計表</h1>
-    
-    <div class="week-input">
-        <input type="text" placeholder="____"> 月 第 <input type="text" placeholder="____"> 週
-    </div>
-
-    <div id="tables-wrapper"></div>
-
-    <script>
-        const wrapper = document.getElementById('tables-wrapper');
-        for (let i = 1; i <= 10; i++) {
-            const tableHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="name-header">姓名</th>
-                            <th class="plan-header">計畫</th>
-                            <th>參訓率<br>(8:30前)</th>
-                            <th>問卷</th>
-                            <th>拜訪量</th>
-                            <th>FYC合計</th>
-                            <th>FYP合計</th>
-                            <th>建議書</th>
-                            <th>轉介</th>
-                            <th>增員人次</th>
-                            <th>講座邀約</th>
-                            <th>收入目標<br>(/月)</th>
-                            <th>件數<br>(/月)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="name-cell" rowspan="3" contenteditable="true"></td>
-                            <td class="plan-cell">預計安排</td>
-                            ${'<td contenteditable="true"></td>'.repeat(11)}
-                        </tr>
-                        <tr class="actual-text">
-                            <td class="plan-cell">實際達成</td>
-                            ${'<td contenteditable="true"></td>'.repeat(11)}
-                        </tr>
-                        <tr class="diff-text">
                             <td class="plan-cell">差額</td>
                             ${'<td contenteditable="true"></td>'.repeat(11)}
                         </tr>
