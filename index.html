@@ -3,133 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_A4最終版</title>
+    <title>週評鑑統計表_A4壓縮版</title>
     <style>
-        /* 基礎設定 */
+        /* 基礎設定：模擬 9:16 與 A4 直式視覺 */
         body {
             font-family: 'Microsoft JhengHei', sans-serif;
-            background-color: #f0f0f0;
+            background-color: #555;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
             justify-content: center;
         }
 
-        /* A4 紙張容器設定 */
-        .a4-container {
-            width: 210mm; /* A4 標準寬度 */
-            min-height: 297mm;
-            padding: 15mm;
-            margin: 0 auto;
+        /* A4 紙張容器：固定比例與寬度 */
+        .a4-page {
+            width: 210mm;
+            height: 297mm;
+            padding: 10mm 8mm;
             background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* 確保內容壓縮在頁面內 */
         }
 
         h1 {
             text-align: center;
             color: #2e7d32;
-            margin-top: 0;
-            margin-bottom: 15px;
+            margin: 0 0 5px 0;
+            font-size: 18pt;
         }
 
         .week-info {
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-size: 12pt;
         }
 
         .week-info input {
             border: none;
             border-bottom: 1px solid #333;
-            width: 50px;
+            width: 40px;
             text-align: center;
             font-size: 14pt;
             outline: none;
         }
 
-        /* 表格樣式 */
+        /* 表格壓縮樣式 */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
+            margin-bottom: 6px; /* 壓縮人員間距 */
             table-layout: fixed;
-            page-break-inside: avoid; /* 防止列印時表格被切斷 */
         }
 
         th, td {
             border: 1px solid #2e7d32;
             text-align: center;
-            padding: 8px 4px;
+            padding: 3px 1px; /* 極致壓縮內距 */
             word-wrap: break-word;
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
-        /* 標題列：深綠色地圖 */
+        /* 標題列：深綠色 */
         thead th {
             background-color: #2e7d32;
             color: white;
-            font-size: 10pt; /* A4 寬度限制下，縮小一點標題字型 */
-            height: 40px;
+            font-size: 9pt;
+            height: 28px;
         }
 
-        .name-header, .name-cell { width: 45px; }
-        .plan-header, .plan-cell { width: 95px; font-weight: bold; }
+        .name-header, .name-cell { width: 35px; }
+        .plan-header, .plan-cell { width: 85px; font-weight: bold; font-size: 9pt; }
 
-        /* 輸入字型大小 */
+        /* 輸入區域字型 14pt */
         td[contenteditable="true"] {
             cursor: text;
             font-size: 14pt;
             outline: none;
         }
 
-        /* 第一列：預計安排 (白色) */
-        .row-expect {
-            background-color: #ffffff;
-            color: #333;
-        }
-        .row-expect .plan-cell { background-color: #ffffff; color: #2e7d32; }
-
-        /* 第二列：實際達成 (中淡綠，比差額淺) */
-        .row-actual {
-            background-color: #e8f5e9; /* 加深的淡綠色 */
+        /* 配色層次 */
+        .row-expect { background-color: #ffffff; color: #333; }
+        
+        .row-actual { 
+            background-color: #dcedc8; /* 加深的淡綠色 */
             color: #8B4513; /* 咖啡色文字 */
         }
 
-        /* 第三列：差額 (中綠色，最深) */
-        .row-diff {
-            background-color: #c8e6c9; /* 最深的綠色背景 */
+        .row-diff { 
+            background-color: #a5d6a7; /* 差額列最深綠 */
             color: #d32f2f; /* 紅色文字 */
             font-weight: bold;
         }
 
         /* 禁止編輯差額欄位 */
-        .row-diff td:not(.plan-cell) {
-            cursor: not-allowed;
-        }
+        .row-diff td:not(.plan-cell) { cursor: not-allowed; }
 
-        /* 列印優化 */
         @media print {
-            body { background: none; padding: 0; }
-            .a4-container { box-shadow: none; margin: 0; width: 100%; }
-            .no-print { display: none; }
+            body { background: none; }
+            .a4-page { box-shadow: none; margin: 0; border: none; }
         }
     </style>
 </head>
 <body>
 
-<div class="a4-container">
+<div class="a4-page">
     <h1>週評鑑統計表</h1>
     
     <div class="week-info">
         <input type="text" placeholder="___"> 月 第 <input type="text" placeholder="___"> 週
     </div>
 
-    <div id="tables-content"></div>
+    <div id="main-content"></div>
 
     <script>
-        const content = document.getElementById('tables-content');
+        const container = document.getElementById('main-content');
         
+        // 精確生成 10 個壓縮區塊
         for (let i = 1; i <= 10; i++) {
             const tableHTML = `
                 <table>
@@ -137,28 +128,28 @@
                         <tr>
                             <th class="name-header">姓名</th>
                             <th class="plan-header">計畫</th>
-                            <th>參訓率<br>(8:30前)</th>
+                            <th>參訓率</th>
                             <th>問卷</th>
-                            <th>拜訪量</th>
-                            <th>FYC<br>合計</th>
-                            <th>FYP<br>合計</th>
+                            <th>拜訪</th>
+                            <th>FYC</th>
+                            <th>FYP</th>
                             <th>建議書</th>
                             <th>轉介</th>
-                            <th>增員<br>人次</th>
-                            <th>講座<br>邀約</th>
-                            <th>收入目標<br>(/月)</th>
-                            <th>件數<br>(/月)</th>
+                            <th>增員</th>
+                            <th>講座</th>
+                            <th>目標</th>
+                            <th>件數</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="row-expect">
                             <td class="name-cell" rowspan="3" contenteditable="true"></td>
                             <td class="plan-cell">預計安排</td>
-                            ${'<td contenteditable="true" class="input-cell" oninput="calc(this)"></td>'.repeat(11)}
+                            ${'<td contenteditable="true" class="in-cell" oninput="run(this)"></td>'.repeat(11)}
                         </tr>
                         <tr class="row-actual">
                             <td class="plan-cell">實際達成</td>
-                            ${'<td contenteditable="true" class="input-cell" oninput="calc(this)"></td>'.repeat(11)}
+                            ${'<td contenteditable="true" class="in-cell" oninput="run(this)"></td>'.repeat(11)}
                         </tr>
                         <tr class="row-diff">
                             <td class="plan-cell">差額</td>
@@ -167,32 +158,31 @@
                     </tbody>
                 </table>
             `;
-            content.insertAdjacentHTML('beforeend', tableHTML);
+            container.insertAdjacentHTML('beforeend', tableHTML);
         }
 
-        function calc(cell) {
-            const table = cell.closest('table');
-            const eRow = table.querySelector('.row-expect');
-            const aRow = table.querySelector('.row-actual');
-            const dRow = table.querySelector('.row-diff');
+        function run(cell) {
+            const tbl = cell.closest('table');
+            const eR = tbl.querySelector('.row-expect');
+            const aR = tbl.querySelector('.row-actual');
+            const dR = tbl.querySelector('.row-diff');
 
-            const eInputs = Array.from(eRow.querySelectorAll('.input-cell'));
-            const aInputs = Array.from(aRow.querySelectorAll('.input-cell'));
-            const dOutputs = Array.from(dRow.querySelectorAll('td:not(.plan-cell)'));
+            const eIns = Array.from(eR.querySelectorAll('.in-cell'));
+            const aIns = Array.from(aR.querySelectorAll('.in-cell'));
+            const dOuts = Array.from(dR.querySelectorAll('td:not(.plan-cell)'));
 
-            eInputs.forEach((input, index) => {
-                let eTxt = input.innerText.trim();
-                let aTxt = aInputs[index].innerText.trim();
-                
-                let eVal = parseFloat(eTxt.replace(/[,%]/g, ''));
-                let aVal = parseFloat(aTxt.replace(/[,%]/g, ''));
+            eIns.forEach((input, idx) => {
+                let eT = input.innerText.trim();
+                let aT = aIns[idx].innerText.trim();
+                let eV = parseFloat(eT.replace(/[,%]/g, ''));
+                let aV = parseFloat(aT.replace(/[,%]/g, ''));
 
-                if (!isNaN(eVal) || !isNaN(aVal)) {
-                    let res = (eVal || 0) - (aVal || 0);
-                    let suffix = (eTxt.includes('%') || aTxt.includes('%')) ? '%' : '';
-                    dOutputs[index].innerText = (eTxt === "" && aTxt === "") ? "" : res + suffix;
+                if (!isNaN(eV) || !isNaN(aV)) {
+                    let res = (eV || 0) - (aV || 0);
+                    let sfx = (eT.includes('%') || aT.includes('%')) ? '%' : '';
+                    dOuts[idx].innerText = (eT === "" && aT === "") ? "" : res + sfx;
                 } else {
-                    dOutputs[index].innerText = "";
+                    dOuts[idx].innerText = "";
                 }
             });
         }
