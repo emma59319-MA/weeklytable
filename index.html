@@ -1,9 +1,9 @@
-<!DOCTYPE html>index.html
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_姓名截圖修正版</title>
+    <title>週評鑑統計表_姓名截圖鎖定版</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         body {
@@ -16,7 +16,7 @@
             max-width: 1500px;
             margin: 0 auto;
             background-color: #fff;
-            padding: 15px 30px 30px 30px; /* 容器上方內距縮小一半 */
+            padding: 15px 30px 30px 30px; /* 容器上方內距縮小 */
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border-radius: 8px;
             position: relative;
@@ -206,7 +206,7 @@
 
         // 截圖邏輯修正版
         function takeScreenshot() {
-            // 修正關鍵：強制失去焦點以鎖定內容
+            // 強制失去焦點以鎖定內容
             if (document.activeElement) {
                 document.activeElement.blur();
             }
@@ -227,7 +227,7 @@
                     link.click();
                     btn.classList.remove('hide-for-screenshot');
                 });
-            }, 100); 
+            }, 500); 
         }
     </script>
 </div>
