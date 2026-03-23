@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_專業優化版</title>
+    <title>週評鑑統計表_最終專業版</title>
     <style>
         body {
             font-family: 'Microsoft JhengHei', sans-serif;
@@ -19,12 +19,14 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border-radius: 8px;
         }
+        /* 修正：主標題放大至 34pt */
         h1 {
             text-align: center;
             color: #2e7d32;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            font-size: 34pt;
         }
-        /* 修正：移至右側、放大至 18pt */
+        /* 右側日期欄位：18pt 無底線 */
         .week-input {
             text-align: right;
             margin-bottom: 30px;
@@ -32,7 +34,6 @@
             color: #2e7d32;
             font-weight: bold;
         }
-        /* 修正：移除輸入框底線、放大至 18pt */
         .week-input input {
             padding: 5px;
             border: none;
@@ -77,17 +78,17 @@
             background-color: #fffde7;
         }
 
-        /* 預計安排：白色背景 */
+        /* 第一列：預計安排 (白色) */
         .row-expect { background-color: #ffffff; color: #333; }
         .row-expect .plan-cell { color: #2e7d32; }
 
-        /* 實際達成：淡綠背景、咖啡色字 */
+        /* 第二列：實際達成 (淡綠背景、咖啡色字) */
         .row-actual { 
             background-color: #e8f5e9; 
             color: #8B4513; 
         }
 
-        /* 差額：中綠背景、紅色字、自動計算 */
+        /* 第三列：差額 (中綠背景、紅色字) */
         .row-diff { 
             background-color: #c8e6c9; 
             color: #d32f2f; 
@@ -111,7 +112,7 @@
     <script>
         const app = document.getElementById('table-app');
         
-        // 生成 10 個人員的表格
+        // 生成 10 個人員表格
         for (let i = 1; i <= 10; i++) {
             const tableHTML = `
                 <table>
@@ -136,11 +137,11 @@
                         <tr class="row-expect">
                             <td class="name-cell" rowspan="3" contenteditable="true"></td>
                             <td class="plan-cell">預計安排</td>
-                            ${'<td contenteditable="true" class="cell-in" oninput="doCalc(this)"></td>'.repeat(11)}
+                            ${'<td contenteditable="true" class="in-cell" oninput="run(this)"></td>'.repeat(11)}
                         </tr>
                         <tr class="row-actual">
                             <td class="plan-cell">實際達成</td>
-                            ${'<td contenteditable="true" class="cell-in" oninput="doCalc(this)"></td>'.repeat(11)}
+                            ${'<td contenteditable="true" class="in-cell" oninput="run(this)"></td>'.repeat(11)}
                         </tr>
                         <tr class="row-diff">
                             <td class="plan-cell">差額</td>
@@ -152,27 +153,26 @@
             app.insertAdjacentHTML('beforeend', tableHTML);
         }
 
-        function doCalc(cell) {
+        function run(cell) {
             const tbl = cell.closest('table');
-            const rE = tbl.querySelector('.row-expect');
-            const rA = tbl.querySelector('.row-actual');
-            const rD = tbl.querySelector('.row-diff');
+            const rowE = tbl.querySelector('.row-expect');
+            const rowA = tbl.querySelector('.row-actual');
+            const rowD = tbl.querySelector('.row-diff');
 
-            const inE = Array.from(rE.querySelectorAll('.cell-in'));
-            const inA = Array.from(rA.querySelectorAll('.cell-in'));
-            const outD = Array.from(rD.querySelectorAll('td:not(.plan-cell)'));
+            const inE = Array.from(rowE.querySelectorAll('.in-cell'));
+            const inA = Array.from(rowA.querySelectorAll('.in-cell'));
+            const outD = Array.from(rowD.querySelectorAll('td:not(.plan-cell)'));
 
-            inE.forEach((eCell, idx) => {
-                let eStr = eCell.innerText.trim();
+            inE.forEach((eInput, idx) => {
+                let eStr = eInput.innerText.trim();
                 let aStr = inA[idx].innerText.trim();
-                
                 let eV = parseFloat(eStr.replace(/[,%]/g, ''));
                 let aV = parseFloat(aStr.replace(/[,%]/g, ''));
 
                 if (!isNaN(eV) || !isNaN(aV)) {
-                    let diff = (eV || 0) - (aV || 0);
-                    let suffix = (eStr.includes('%') || aStr.includes('%')) ? '%' : '';
-                    outD[idx].innerText = (eStr === "" && aStr === "") ? "" : diff + suffix;
+                    let res = (eV || 0) - (aV || 0);
+                    let sfx = (eStr.includes('%') || aStr.includes('%')) ? '%' : '';
+                    outD[idx].innerText = (eStr === "" && aStr === "") ? "" : res + sfx;
                 } else {
                     outD[idx].innerText = "";
                 }
