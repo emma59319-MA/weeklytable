@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_10人全螢幕版</title>
+    <title>週評鑑統計表_專業版</title>
     <style>
         body {
             font-family: 'Microsoft JhengHei', sans-serif;
@@ -12,7 +12,7 @@
             color: #333;
         }
         .container {
-            max-width: 1500px; /* 寬廣版面，避免跑版 */
+            max-width: 1500px;
             margin: 0 auto;
             background-color: #fff;
             padding: 30px;
@@ -44,19 +44,21 @@
             margin-bottom: 50px;
             table-layout: fixed;
         }
+        /* 一般單元格邊框為綠色 */
         th, td {
             border: 1px solid #2e7d32;
             text-align: center;
             padding: 12px 5px;
             word-wrap: break-word;
         }
-        /* 標題列：深綠色地圖 */
+        /* 修正：標題列使用白色邊框將欄位分開 */
         thead tr th {
             background-color: #2e7d32;
             color: white;
             font-weight: bold;
             font-size: 10pt;
             height: 50px;
+            border: 1px solid white; 
         }
         .name-header, .name-cell { width: 60px; }
         .plan-header, .plan-cell { width: 140px; font-weight: bold; }
@@ -69,23 +71,22 @@
         }
         td[contenteditable="true"]:focus {
             background-color: #fffde7;
-            box-shadow: inset 0 0 5px rgba(46, 125, 50, 0.2);
         }
 
-        /* 第一列：預計安排 (白色) */
+        /* 預計安排：白色 */
         .row-expect { background-color: #ffffff; color: #333; }
         .row-expect .plan-cell { color: #2e7d32; }
 
-        /* 第二列：實際達成 (較淡的綠，比差額淺) */
+        /* 實際達成：淡綠色背景，咖啡色字 */
         .row-actual { 
             background-color: #e8f5e9; 
-            color: #8B4513; /* 咖啡色文字 */
+            color: #8B4513; 
         }
 
-        /* 第三列：差額 (中深綠，最深色) */
+        /* 差額：中綠色背景，紅色字 */
         .row-diff { 
             background-color: #c8e6c9; 
-            color: #d32f2f; /* 紅色文字 */
+            color: #d32f2f; 
             font-weight: bold;
         }
 
@@ -131,11 +132,11 @@
                         <tr class="row-expect">
                             <td class="name-cell" rowspan="3" contenteditable="true"></td>
                             <td class="plan-cell">預計安排</td>
-                            ${'<td contenteditable="true" class="cell-in" oninput="doMath(this)"></td>'.repeat(11)}
+                            ${'<td contenteditable="true" class="cell-in" oninput="doCalc(this)"></td>'.repeat(11)}
                         </tr>
                         <tr class="row-actual">
                             <td class="plan-cell">實際達成</td>
-                            ${'<td contenteditable="true" class="cell-in" oninput="doMath(this)"></td>'.repeat(11)}
+                            ${'<td contenteditable="true" class="cell-in" oninput="doCalc(this)"></td>'.repeat(11)}
                         </tr>
                         <tr class="row-diff">
                             <td class="plan-cell">差額</td>
@@ -147,7 +148,7 @@
             app.insertAdjacentHTML('beforeend', tableHTML);
         }
 
-        function doMath(cell) {
+        function doCalc(cell) {
             const tbl = cell.closest('table');
             const rE = tbl.querySelector('.row-expect');
             const rA = tbl.querySelector('.row-actual');
