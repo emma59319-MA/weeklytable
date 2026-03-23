@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-<head> 
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_一鍵截圖版</title>
+    <title>週評鑑統計表_精煉專業版</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         body {
             font-family: 'Microsoft JhengHei', sans-serif;
             background-color: #f4f7f4;
-            padding: 20px;
+            padding: 10px 20px; /* 上方邊界縮小 */
             color: #333;
         }
         .container {
             max-width: 1500px;
             margin: 0 auto;
             background-color: #fff;
-            padding: 30px;
+            padding: 15px 30px 30px 30px; /* 容器上方內距縮小一半 */
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border-radius: 8px;
             position: relative;
         }
-        /* 一鍵截圖按鈕樣式 */
+        /* 一鍵截圖按鈕 */
         .screenshot-btn {
             position: fixed;
-            top: 20px;
+            top: 15px;
             right: 20px;
             background-color: #2e7d32;
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 14pt;
+            padding: 8px 18px;
+            font-size: 13pt;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
@@ -42,18 +42,18 @@
             background-color: #1b5e20;
             transform: scale(1.05);
         }
-        /* 主標題：51pt */
+        /* 主標題：修正為 43pt */
         h1 {
             text-align: center;
             color: #2e7d32;
-            margin-bottom: 10px;
-            font-size: 51pt;
+            margin-bottom: 5px;
+            font-size: 43pt;
             font-weight: 900;
         }
         /* 右側日期：18pt 無底線 */
         .week-input {
             text-align: right;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             font-size: 18pt;
             color: #2e7d32;
             font-weight: bold;
@@ -71,10 +71,10 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 40px;
+            margin-bottom: 20px; /* 人員之間空白列高縮小一半 */
             table-layout: fixed;
         }
-        /* 壓縮列高：Padding 9px */
+        /* 壓縮列高：維持 Padding 9px */
         th, td {
             border: 1px solid #2e7d32;
             text-align: center;
@@ -119,10 +119,7 @@
 
         .row-diff td:not(.plan-cell) { cursor: not-allowed; }
 
-        /* 截圖時隱藏按鈕 */
-        .hide-for-screenshot {
-            display: none !important;
-        }
+        .hide-for-screenshot { display: none !important; }
     </style>
 </head>
 <body>
@@ -141,7 +138,6 @@
     <script>
         const app = document.getElementById('table-app');
         
-        // 生成 10 個人員表格
         for (let i = 1; i <= 10; i++) {
             const tableHTML = `
                 <table>
@@ -208,24 +204,19 @@
             });
         }
 
-        // 截圖邏輯
         function takeScreenshot() {
             const btn = document.getElementById('screenshotBtn');
             const area = document.getElementById('captureArea');
-            
-            // 先隱藏按鈕，避免按鈕出現在圖中
             btn.classList.add('hide-for-screenshot');
 
             html2canvas(area, {
                 backgroundColor: "#f4f7f4",
-                scale: 2 // 提升畫質
+                scale: 2 
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = '週評鑑統計表_' + new Date().toLocaleDateString() + '.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                
-                // 恢復按鈕顯示
                 btn.classList.remove('hide-for-screenshot');
             });
         }
