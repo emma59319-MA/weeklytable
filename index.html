@@ -3,46 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_8人專業版</title>
+    <title>週評鑑統計表_最終精確版</title>
     <style>
         body {
             font-family: 'Microsoft JhengHei', sans-serif;
             background-color: #444;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
         }
 
-        /* A4 紙張比例設定 (9:16 視覺) */
+        /* A4 紙張比例設定 */
         .a4-page {
             width: 210mm;
             height: 297mm;
-            padding: 12mm 10mm;
+            padding: 10mm 8mm;
             background-color: #fff;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
         }
 
         h1 {
             text-align: center;
             color: #2e7d32;
-            margin: 0 0 10px 0;
-            font-size: 20pt;
+            margin: 0 0 8px 0;
+            font-size: 18pt;
         }
 
         .week-info {
             text-align: center;
-            margin-bottom: 15px;
-            font-size: 13pt;
+            margin-bottom: 12px;
+            font-size: 12pt;
         }
 
         .week-info input {
             border: none;
             border-bottom: 1px solid #333;
-            width: 50px;
+            width: 45px;
             text-align: center;
             font-size: 14pt;
             outline: none;
@@ -51,56 +51,56 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 12px;
+            margin-bottom: 10px; /* 8人版面間距調優 */
             table-layout: fixed;
         }
 
         th, td {
             border: 1px solid #2e7d32;
             text-align: center;
-            padding: 6px 2px;
+            padding: 5px 1px;
             word-wrap: break-word;
             line-height: 1.2;
         }
 
-        /* 標題列：全排深綠色底，白字 */
+        /* 標題列：深綠底白字 */
         thead th {
             background-color: #2e7d32;
             color: white;
-            font-size: 9pt; /* 縮小標題文字 */
+            font-size: 8.5pt; /* 稍微縮小以容納兩排文字 */
             height: 42px;
             font-weight: bold;
         }
 
-        .name-header, .name-cell { width: 45px; }
-        .plan-header, .plan-cell { width: 100px; font-weight: bold; font-size: 10pt; }
+        .name-header, .name-cell { width: 38px; }
+        .plan-header, .plan-cell { width: 85px; font-weight: bold; font-size: 9.5pt; }
 
-        /* 輸入區域：14pt */
+        /* 填寫區字型 14pt */
         td[contenteditable="true"] {
             cursor: text;
             font-size: 14pt;
             outline: none;
         }
 
-        /* 列背景與文字顏色設定 */
+        /* 配色層次設定 */
         .row-expect { background-color: #ffffff; color: #333; }
-        
+        .row-expect .plan-cell { color: #2e7d32; background-color: #fff; }
+
         .row-actual { 
-            background-color: #e8f5e9; /* 加深的淡綠色 */
+            background-color: #e8f5e9; /* 非常淡的綠色 (比差額淺) */
             color: #8B4513; /* 咖啡色文字 */
         }
 
         .row-diff { 
-            background-color: #c8e6c9; /* 差額列最深綠背景 */
+            background-color: #c8e6c9; /* 淡綠色 (較深) */
             color: #d32f2f; /* 紅色文字 */
             font-weight: bold;
         }
 
-        /* 差額列禁止編輯 */
         .row-diff td:not(.plan-cell) { cursor: not-allowed; }
 
         @media print {
-            body { background: none; }
+            body { background: none; padding: 0; }
             .a4-page { box-shadow: none; margin: 0; }
         }
     </style>
@@ -114,12 +114,12 @@
         <input type="text" placeholder="___"> 月 第 <input type="text" placeholder="___"> 週
     </div>
 
-    <div id="table-container"></div>
+    <div id="app"></div>
 
     <script>
-        const container = document.getElementById('table-container');
+        const app = document.getElementById('app');
         
-        // 生成 8 個人員的評鑑表
+        // 生成 8 個人員區塊
         for (let i = 1; i <= 8; i++) {
             const tableHTML = `
                 <table>
@@ -144,11 +144,11 @@
                         <tr class="row-expect">
                             <td class="name-cell" rowspan="3" contenteditable="true"></td>
                             <td class="plan-cell">預計安排</td>
-                            ${'<td contenteditable="true" class="input-cell" oninput="calc(this)"></td>'.repeat(11)}
+                            ${'<td contenteditable="true" class="input-cell" oninput="doCalc(this)"></td>'.repeat(11)}
                         </tr>
                         <tr class="row-actual">
                             <td class="plan-cell">實際達成</td>
-                            ${'<td contenteditable="true" class="input-cell" oninput="calc(this)"></td>'.repeat(11)}
+                            ${'<td contenteditable="true" class="input-cell" oninput="doCalc(this)"></td>'.repeat(11)}
                         </tr>
                         <tr class="row-diff">
                             <td class="plan-cell">差額</td>
@@ -157,32 +157,35 @@
                     </tbody>
                 </table>
             `;
-            container.insertAdjacentHTML('beforeend', tableHTML);
+            app.insertAdjacentHTML('beforeend', tableHTML);
         }
 
-        // 自動計算函數 (預計 - 實際 = 差額)
-        function calc(cell) {
-            const tbl = cell.closest('table');
-            const rowE = tbl.querySelector('.row-expect');
-            const rowA = tbl.querySelector('.row-actual');
-            const rowD = tbl.querySelector('.row-diff');
+        function doCalc(cell) {
+            const table = cell.closest('table');
+            const rowE = table.querySelector('.row-expect');
+            const rowA = table.querySelector('.row-actual');
+            const rowD = table.querySelector('.row-diff');
 
-            const eIns = Array.from(rowE.querySelectorAll('.input-cell'));
-            const aIns = Array.from(rowA.querySelectorAll('.input-cell'));
-            const dOuts = Array.from(rowD.querySelectorAll('td:not(.plan-cell)'));
+            const cellsE = Array.from(rowE.querySelectorAll('.input-cell'));
+            const cellsA = Array.from(rowA.querySelectorAll('.input-cell'));
+            const cellsD = Array.from(rowD.querySelectorAll('td:not(.plan-cell)'));
 
-            eIns.forEach((input, idx) => {
-                let eT = input.innerText.trim();
-                let aT = aIns[idx].innerText.trim();
-                let eV = parseFloat(eT.replace(/[,%]/g, ''));
-                let aV = parseFloat(aT.replace(/[,%]/g, ''));
+            cellsE.forEach((eCell, idx) => {
+                const aCell = cellsA[idx];
+                const dCell = cellsD[idx];
+
+                let eValStr = eCell.innerText.trim();
+                let aValStr = aCell.innerText.trim();
+                
+                let eV = parseFloat(eValStr.replace(/[,%]/g, ''));
+                let aV = parseFloat(aValStr.replace(/[,%]/g, ''));
 
                 if (!isNaN(eV) || !isNaN(aV)) {
-                    let res = (eV || 0) - (aV || 0);
-                    let sfx = (eT.includes('%') || aT.includes('%')) ? '%' : '';
-                    dOuts[idx].innerText = (eT === "" && aT === "") ? "" : res + sfx;
+                    let diff = (eV || 0) - (aV || 0);
+                    let suffix = (eValStr.includes('%') || aValStr.includes('%')) ? '%' : '';
+                    dCell.innerText = (eValStr === "" && aValStr === "") ? "" : diff + suffix;
                 } else {
-                    dOuts[idx].innerText = "";
+                    dCell.innerText = "";
                 }
             });
         }
