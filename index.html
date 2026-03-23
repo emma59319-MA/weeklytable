@@ -3,122 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_姓名截圖鎖定版</title>
+    <title>週評鑑統計表_最終穩定版</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        body {
-            font-family: 'Microsoft JhengHei', sans-serif;
-            background-color: #f4f7f4;
-            padding: 10px 20px; /* 上方邊界縮小 */
-            color: #333;
-        }
-        .container {
-            max-width: 1500px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 15px 30px 30px 30px; /* 容器上方內距縮小 */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            position: relative;
-        }
-        /* 一鍵截圖按鈕 */
-        .screenshot-btn {
-            position: fixed;
-            top: 15px;
-            right: 20px;
-            background-color: #2e7d32;
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            font-size: 13pt;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transition: transform 0.2s;
-        }
-        .screenshot-btn:hover {
-            background-color: #1b5e20;
-            transform: scale(1.05);
-        }
-        /* 主標題：維持 43pt */
-        h1 {
-            text-align: center;
-            color: #2e7d32;
-            margin-bottom: 5px;
-            font-size: 43pt;
-            font-weight: 900;
-        }
-        /* 右側日期：18pt 無底線 */
-        .week-input {
-            text-align: right;
-            margin-bottom: 15px;
-            font-size: 18pt;
-            color: #2e7d32;
-            font-weight: bold;
-        }
-        .week-input input {
-            padding: 5px;
-            border: none;
-            width: 70px;
-            text-align: center;
-            font-size: 18pt;
-            outline: none;
-            background: transparent;
-            color: #2e7d32;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px; /* 人員之間空白列高縮小 */
-            table-layout: fixed;
-        }
-        /* 壓縮列高：維持 Padding 9px */
-        th, td {
-            border: 1px solid #2e7d32;
-            text-align: center;
-            padding: 9px 5px; 
-            word-wrap: break-word;
-        }
-        /* 標題列：深綠底白字、白色分隔線、高度 40px */
-        thead tr th {
-            background-color: #2e7d32;
-            color: white;
-            font-weight: bold;
-            font-size: 10pt;
-            height: 40px; 
-            border: 1px solid white; 
-        }
-        .name-header, .name-cell { width: 60px; }
-        .plan-header, .plan-cell { width: 140px; font-weight: bold; }
-
-        /* 輸入字型 14pt */
-        td[contenteditable="true"] {
-            cursor: text;
-            font-size: 14pt;
-            outline: none;
-        }
-        td[contenteditable="true"]:focus {
-            background-color: #fffde7;
-        }
-
+        body { font-family: 'Microsoft JhengHei', sans-serif; background-color: #f4f7f4; padding: 10px 20px; color: #333; }
+        .container { max-width: 1500px; margin: 0 auto; background-color: #fff; padding: 15px 30px 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; position: relative; }
+        .screenshot-btn { position: fixed; top: 15px; right: 20px; background-color: #2e7d32; color: white; border: none; padding: 8px 18px; font-size: 13pt; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        h1 { text-align: center; color: #2e7d32; margin-bottom: 5px; font-size: 43pt; font-weight: 900; }
+        .week-input { text-align: right; margin-bottom: 15px; font-size: 18pt; color: #2e7d32; font-weight: bold; }
+        .week-input input { padding: 5px; border: none; width: 70px; text-align: center; font-size: 18pt; outline: none; background: transparent; color: #2e7d32; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; table-layout: fixed; }
+        th, td { border: 1px solid #2e7d32; text-align: center; padding: 9px 5px; word-wrap: break-word; }
+        thead tr th { background-color: #2e7d32; color: white; font-weight: bold; font-size: 10pt; height: 40px; border: 1px solid white; }
+        .name-header { width: 60px; }
+        .plan-header { width: 140px; }
+        td[contenteditable="true"] { cursor: text; font-size: 14pt; outline: none; }
+        td[contenteditable="true"]:focus { background-color: #fffde7; }
         .row-expect { background-color: #ffffff; color: #333; }
-        .row-expect .plan-cell { color: #2e7d32; }
-
-        .row-actual { 
-            background-color: #e8f5e9; 
-            color: #8B4513; 
-        }
-
-        .row-diff { 
-            background-color: #c8e6c9; 
-            color: #d32f2f; 
-            font-weight: bold;
-        }
-
-        .row-diff td:not(.plan-cell) { cursor: not-allowed; }
-
+        .row-actual { background-color: #e8f5e9; color: #8B4513; }
+        .row-diff { background-color: #c8e6c9; color: #d32f2f; font-weight: bold; }
         .hide-for-screenshot { display: none !important; }
     </style>
 </head>
@@ -128,54 +31,26 @@
 
 <div class="container" id="captureArea">
     <h1>週評鑑統計表</h1>
-    
     <div class="week-input">
         <input type="text" placeholder="____"> 月 第 <input type="text" placeholder="____"> 週
     </div>
-
     <div id="table-app"></div>
 
     <script>
         const app = document.getElementById('table-app');
-        
         for (let i = 1; i <= 10; i++) {
-            const tableHTML = `
+            app.insertAdjacentHTML('beforeend', `
                 <table>
                     <thead>
-                        <tr>
-                            <th class="name-header">姓名</th>
-                            <th class="plan-header">計畫</th>
-                            <th>參訓率<br>(8:30前)</th>
-                            <th>問卷</th>
-                            <th>拜訪量</th>
-                            <th>FYC<br>合計</th>
-                            <th>FYP<br>合計</th>
-                            <th>建議書</th>
-                            <th>轉介</th>
-                            <th>增員<br>人次</th>
-                            <th>講座<br>邀約</th>
-                            <th>收入目標<br>(/月)</th>
-                            <th>件數<br>(/月)</th>
-                        </tr>
+                        <tr><th class="name-header">姓名</th><th class="plan-header">計畫</th><th>參訓率<br>(8:30前)</th><th>問卷</th><th>拜訪量</th><th>FYC<br>合計</th><th>FYP<br>合計</th><th>建議書</th><th>轉介</th><th>增員<br>人次</th><th>講座<br>邀約</th><th>收入目標<br>(/月)</th><th>件數<br>(/月)</th></tr>
                     </thead>
                     <tbody>
-                        <tr class="row-expect">
-                            <td class="name-cell" rowspan="3" contenteditable="true"></td>
-                            <td class="plan-cell">預計安排</td>
-                            ${'<td contenteditable="true" class="in-cell" oninput="run(this)"></td>'.repeat(11)}
-                        </tr>
-                        <tr class="row-actual">
-                            <td class="plan-cell">實際達成</td>
-                            ${'<td contenteditable="true" class="in-cell" oninput="run(this)"></td>'.repeat(11)}
-                        </tr>
-                        <tr class="row-diff">
-                            <td class="plan-cell">差額</td>
-                            ${'<td></td>'.repeat(11)}
-                        </tr>
+                        <tr class="row-expect"><td class="name-cell" rowspan="3" contenteditable="true"></td><td class="plan-cell">預計安排</td>${'<td contenteditable="true" class="in-cell" oninput="run(this)"></td>'.repeat(11)}</tr>
+                        <tr class="row-actual"><td class="plan-cell">實際達成</td>${'<td contenteditable="true" class="in-cell" oninput="run(this)"></td>'.repeat(11)}</tr>
+                        <tr class="row-diff"><td class="plan-cell">差額</td>${'<td></td>'.repeat(11)}</tr>
                     </tbody>
                 </table>
-            `;
-            app.insertAdjacentHTML('beforeend', tableHTML);
+            `);
         }
 
         function run(cell) {
@@ -183,7 +58,6 @@
             const rowE = tbl.querySelector('.row-expect');
             const rowA = tbl.querySelector('.row-actual');
             const rowD = tbl.querySelector('.row-diff');
-
             const inE = Array.from(rowE.querySelectorAll('.in-cell'));
             const inA = Array.from(rowA.querySelectorAll('.in-cell'));
             const outD = Array.from(rowD.querySelectorAll('td:not(.plan-cell)'));
@@ -193,44 +67,47 @@
                 let aStr = inA[idx].innerText.trim();
                 let eV = parseFloat(eStr.replace(/[,%]/g, ''));
                 let aV = parseFloat(aStr.replace(/[,%]/g, ''));
-
                 if (!isNaN(eV) || !isNaN(aV)) {
                     let res = (eV || 0) - (aV || 0);
                     let sfx = (eStr.includes('%') || aStr.includes('%')) ? '%' : '';
                     outD[idx].innerText = (eStr === "" && aStr === "") ? "" : res + sfx;
-                } else {
-                    outD[idx].innerText = "";
-                }
+                } else { outD[idx].innerText = ""; }
             });
         }
 
-        // 截圖邏輯修正版
-        function takeScreenshot() {
-            // 強制失去焦點以鎖定內容
-            if (document.activeElement) {
-                document.activeElement.blur();
-            }
+        async function takeScreenshot() {
+            const btn = document.getElementById('screenshotBtn');
+            const area = document.getElementById('captureArea');
+            
+            // 核心修正：手動將所有編輯格內容同步到 HTML
+            document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+                el.setAttribute('data-text', el.innerText); 
+                el.innerHTML = el.innerText; 
+            });
 
-            // 給予短暫延遲確保 DOM 更新完成
-            setTimeout(() => {
-                const btn = document.getElementById('screenshotBtn');
-                const area = document.getElementById('captureArea');
-                btn.classList.add('hide-for-screenshot');
-
-                html2canvas(area, {
-                    backgroundColor: "#f4f7f4",
-                    scale: 2 
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = '週評鑑統計表_' + new Date().toLocaleDateString() + '.png';
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                    btn.classList.remove('hide-for-screenshot');
-                });
-            }, 500); 
+            btn.classList.add('hide-for-screenshot');
+            
+            // 使用更穩定的截圖參數
+            html2canvas(area, {
+                backgroundColor: "#f4f7f4",
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                onclone: (clonedDoc) => {
+                    // 確保克隆的 DOM 中文字是存在的
+                    clonedDoc.querySelectorAll('[contenteditable="true"]').forEach(el => {
+                        el.style.whiteSpace = 'pre-wrap';
+                    });
+                }
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `週評鑑統計表_${new Date().toLocaleDateString()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                btn.classList.remove('hide-for-screenshot');
+            });
         }
     </script>
 </div>
-
 </body>
 </html>
