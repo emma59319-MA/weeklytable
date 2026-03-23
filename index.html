@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>週評鑑統計表</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            background-color: #f0f4f0; /* 非常淡的綠色背景 */
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #2e7d32; /* 深綠色標題 */
+            margin-bottom: 20px;
+        }
+        .week-input {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .week-input input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 80px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px; /* 每個區塊之間的間距 */
+            table-layout: fixed; /* 確保列寬一致 */
+        }
+        th, td {
+            border: 1px solid #a5d6a7; /* 淡綠色邊框 */
+            text-align: center;
+            padding: 10px;
+            word-wrap: break-word; /* 允許長文字換行 */
+        }
+        /* 標題列 (深綠色底白字) */
+        th {
+            background-color: #2e7d32;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+            height: 40px;
+        }
+        /* 姓名列 */
+        .name-cell {
+            font-weight: bold;
+            background-color: #fff;
+            color: #2e7d32;
+            width: 80px;
+        }
+        /* 計畫列 */
+        .plan-cell {
+            width: 80px;
+            background-color: #e8f5e9; /* 非常淡的綠色底 */
+        }
+        /* 可編輯的單元格 */
+        td[contenteditable="true"] {
+            cursor: text;
+        }
+        td[contenteditable="true"]:focus {
+            background-color: #e1f5fe; /* 點擊時顯示淡藍色高亮 */
+            outline: 2px solid #2e7d32;
+        }
+        /* 差額列，預設顯示為負值樣式，但內容空白 */
+        .negative-val {
+            color: #d32f2f; /* 預設為紅色，您可以手動輸入負號 */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>週評鑑統計表</h1>
+    
+    <div class="week-input">
+        <input type="text" placeholder="____"> 月 第 <input type="text" placeholder="____"> 週
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="name-header">姓名</th>
+                <th class="plan-header">計畫</th>
+                <th>參訓率<br>(8:30前)</th>
+                <th>問卷</th>
+                <th>拜訪量</th>
+                <th>FYC合計</th>
+                <th>FYP合計</th>
+                <th>建議書</th>
+                <th>轉介</th>
+                <th>增員人次</th>
+                <th>講座邀約</th>
+                <th>收入目標<br>(/月)</th>
+                <th>件數<br>(/月)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="name-cell" rowspan="3" contenteditable="true">人員 01</td>
+                <td class="plan-cell">預計安排</td>
+                <td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td>
+                <td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td>
+                <td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td>
+                <td contenteditable="true"></td><td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td class="plan-cell">實際達成</td>
+                <td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td>
+                <td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td>
+                <td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td>
+                <td contenteditable="true"></td><td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td class="plan-cell">差額</td>
+                <td contenteditable="true" class="negative-val"></td><td contenteditable="true" class="negative-val"></td><td contenteditable="true" class="negative-val"></td>
+                <td contenteditable="true" class="negative-val"></td><td contenteditable="true" class="negative-val"></td><td contenteditable="true" class="negative-val"></td>
+                <td contenteditable="true" class="negative-val"></td><td contenteditable="true" class="negative-val"></td><td contenteditable="true" class="negative-val"></td>
+                <td contenteditable="true" class="negative-val"></td><td contenteditable="true" class="negative-val"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        const container = document.querySelector('.container');
+        for (let i = 2; i <= 10; i++) {
+            const personId = i < 10 ? '0' + i : i;
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="name-header">姓名</th><th class="plan-header">計畫</th>
+                            <th>參訓率<br>(8:30前)</th><th>問卷</th><th>拜訪量</th><th>FYC合計</th><th>FYP合計</th><th>建議書</th><th>轉介</th><th>增員人次</th><th>講座邀約</th><th>收入目標<br>(/月)</th><th>件數<br>(/月)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="name-cell" rowspan="3" contenteditable="true">人員 ${personId}</td>
+                            <td class="plan-cell">預計安排</td>
+                            ${'<td contenteditable="true"></td>'.repeat(11)}
+                        </tr>
+                        <tr>
+                            <td class="plan-cell">實際達成</td>
+                            ${'<td contenteditable="true"></td>'.repeat(11)}
+                        </tr>
+                        <tr>
+                            <td class="plan-cell">差額</td>
+                            ${'<td contenteditable="true" class="negative-val"></td>'.repeat(11)}
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+            container.insertAdjacentHTML('beforeend', tableHTML);
+        }
+    </script>
+
+</div>
+
+</body>
+</html>
