@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_最終專業版</title>
+    <title>週評鑑統計表_首席經理專用版</title>
     <style>
         body {
             font-family: 'Microsoft JhengHei', sans-serif;
@@ -19,12 +19,13 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border-radius: 8px;
         }
-        /* 修正：主標題放大至 34pt */
+        /* 修正：主標題放大至 51pt (34pt 的 1.5 倍) */
         h1 {
             text-align: center;
             color: #2e7d32;
             margin-bottom: 10px;
-            font-size: 34pt;
+            font-size: 51pt;
+            font-weight: 900;
         }
         /* 右側日期欄位：18pt 無底線 */
         .week-input {
@@ -78,17 +79,17 @@
             background-color: #fffde7;
         }
 
-        /* 第一列：預計安排 (白色) */
+        /* 預計安排：白色背景 */
         .row-expect { background-color: #ffffff; color: #333; }
         .row-expect .plan-cell { color: #2e7d32; }
 
-        /* 第二列：實際達成 (淡綠背景、咖啡色字) */
+        /* 實際達成：淡綠背景、咖啡色字 */
         .row-actual { 
             background-color: #e8f5e9; 
             color: #8B4513; 
         }
 
-        /* 第三列：差額 (中綠背景、紅色字) */
+        /* 差額：中綠背景、紅色字、自動計算 */
         .row-diff { 
             background-color: #c8e6c9; 
             color: #d32f2f; 
