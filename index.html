@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_精簡專業版</title>
+    <title>週評鑑統計表_一鍵截圖版</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         body {
             font-family: 'Microsoft JhengHei', sans-serif;
@@ -18,8 +19,30 @@
             padding: 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border-radius: 8px;
+            position: relative;
         }
-        /* 主標題：維持 51pt */
+        /* 一鍵截圖按鈕樣式 */
+        .screenshot-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14pt;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+        .screenshot-btn:hover {
+            background-color: #1b5e20;
+            transform: scale(1.05);
+        }
+        /* 主標題：51pt */
         h1 {
             text-align: center;
             color: #2e7d32;
@@ -27,7 +50,7 @@
             font-size: 51pt;
             font-weight: 900;
         }
-        /* 右側日期欄位：18pt 無底線 */
+        /* 右側日期：18pt 無底線 */
         .week-input {
             text-align: right;
             margin-bottom: 25px;
@@ -51,14 +74,14 @@
             margin-bottom: 40px;
             table-layout: fixed;
         }
-        /* 壓縮關鍵：將 padding 從 12px 降至 9px (約縮減 20%) */
+        /* 壓縮列高：Padding 9px */
         th, td {
             border: 1px solid #2e7d32;
             text-align: center;
             padding: 9px 5px; 
             word-wrap: break-word;
         }
-        /* 標題列：高度從 50px 降至 40px (縮減 20%) */
+        /* 標題列：深綠底白字、白色分隔線、高度 40px */
         thead tr th {
             background-color: #2e7d32;
             color: white;
@@ -70,7 +93,7 @@
         .name-header, .name-cell { width: 60px; }
         .plan-header, .plan-cell { width: 140px; font-weight: bold; }
 
-        /* 輸入字型維持 14pt */
+        /* 輸入字型 14pt */
         td[contenteditable="true"] {
             cursor: text;
             font-size: 14pt;
@@ -80,17 +103,14 @@
             background-color: #fffde7;
         }
 
-        /* 第一列：預計安排 */
         .row-expect { background-color: #ffffff; color: #333; }
         .row-expect .plan-cell { color: #2e7d32; }
 
-        /* 第二列：實際達成 */
         .row-actual { 
             background-color: #e8f5e9; 
             color: #8B4513; 
         }
 
-        /* 第三列：差額 */
         .row-diff { 
             background-color: #c8e6c9; 
             color: #d32f2f; 
@@ -98,11 +118,18 @@
         }
 
         .row-diff td:not(.plan-cell) { cursor: not-allowed; }
+
+        /* 截圖時隱藏按鈕 */
+        .hide-for-screenshot {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<button class="screenshot-btn" id="screenshotBtn" onclick="takeScreenshot()">📸 一鍵截圖並儲存</button>
+
+<div class="container" id="captureArea">
     <h1>週評鑑統計表</h1>
     
     <div class="week-input">
@@ -178,6 +205,28 @@
                 } else {
                     outD[idx].innerText = "";
                 }
+            });
+        }
+
+        // 截圖邏輯
+        function takeScreenshot() {
+            const btn = document.getElementById('screenshotBtn');
+            const area = document.getElementById('captureArea');
+            
+            // 先隱藏按鈕，避免按鈕出現在圖中
+            btn.classList.add('hide-for-screenshot');
+
+            html2canvas(area, {
+                backgroundColor: "#f4f7f4",
+                scale: 2 // 提升畫質
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = '週評鑑統計表_' + new Date().toLocaleDateString() + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                // 恢復按鈕顯示
+                btn.classList.remove('hide-for-screenshot');
             });
         }
     </script>
