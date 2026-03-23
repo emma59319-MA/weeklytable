@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_精煉專業版</title>
+    <title>週評鑑統計表_姓名截圖修正版</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         body {
@@ -42,7 +42,7 @@
             background-color: #1b5e20;
             transform: scale(1.05);
         }
-        /* 主標題：修正為 43pt */
+        /* 主標題：維持 43pt */
         h1 {
             text-align: center;
             color: #2e7d32;
@@ -71,7 +71,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px; /* 人員之間空白列高縮小一半 */
+            margin-bottom: 20px; /* 人員之間空白列高縮小 */
             table-layout: fixed;
         }
         /* 壓縮列高：維持 Padding 9px */
@@ -204,21 +204,30 @@
             });
         }
 
+        // 截圖邏輯修正版
         function takeScreenshot() {
-            const btn = document.getElementById('screenshotBtn');
-            const area = document.getElementById('captureArea');
-            btn.classList.add('hide-for-screenshot');
+            // 修正關鍵：強制失去焦點以鎖定內容
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
 
-            html2canvas(area, {
-                backgroundColor: "#f4f7f4",
-                scale: 2 
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = '週評鑑統計表_' + new Date().toLocaleDateString() + '.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                btn.classList.remove('hide-for-screenshot');
-            });
+            // 給予短暫延遲確保 DOM 更新完成
+            setTimeout(() => {
+                const btn = document.getElementById('screenshotBtn');
+                const area = document.getElementById('captureArea');
+                btn.classList.add('hide-for-screenshot');
+
+                html2canvas(area, {
+                    backgroundColor: "#f4f7f4",
+                    scale: 2 
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = '週評鑑統計表_' + new Date().toLocaleDateString() + '.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    btn.classList.remove('hide-for-screenshot');
+                });
+            }, 100); 
         }
     </script>
 </div>
