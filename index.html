@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>週評鑑統計表_首席經理專用版</title>
+    <title>週評鑑統計表_精簡專業版</title>
     <style>
         body {
             font-family: 'Microsoft JhengHei', sans-serif;
@@ -19,7 +19,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border-radius: 8px;
         }
-        /* 修正：主標題放大至 51pt (34pt 的 1.5 倍) */
+        /* 主標題：維持 51pt */
         h1 {
             text-align: center;
             color: #2e7d32;
@@ -30,7 +30,7 @@
         /* 右側日期欄位：18pt 無底線 */
         .week-input {
             text-align: right;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             font-size: 18pt;
             color: #2e7d32;
             font-weight: bold;
@@ -48,28 +48,29 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
             table-layout: fixed;
         }
+        /* 壓縮關鍵：將 padding 從 12px 降至 9px (約縮減 20%) */
         th, td {
             border: 1px solid #2e7d32;
             text-align: center;
-            padding: 12px 5px;
+            padding: 9px 5px; 
             word-wrap: break-word;
         }
-        /* 標題列：深綠底白字、白色分隔線 */
+        /* 標題列：高度從 50px 降至 40px (縮減 20%) */
         thead tr th {
             background-color: #2e7d32;
             color: white;
             font-weight: bold;
             font-size: 10pt;
-            height: 50px;
+            height: 40px; 
             border: 1px solid white; 
         }
         .name-header, .name-cell { width: 60px; }
         .plan-header, .plan-cell { width: 140px; font-weight: bold; }
 
-        /* 輸入字型 14pt */
+        /* 輸入字型維持 14pt */
         td[contenteditable="true"] {
             cursor: text;
             font-size: 14pt;
@@ -79,17 +80,17 @@
             background-color: #fffde7;
         }
 
-        /* 預計安排：白色背景 */
+        /* 第一列：預計安排 */
         .row-expect { background-color: #ffffff; color: #333; }
         .row-expect .plan-cell { color: #2e7d32; }
 
-        /* 實際達成：淡綠背景、咖啡色字 */
+        /* 第二列：實際達成 */
         .row-actual { 
             background-color: #e8f5e9; 
             color: #8B4513; 
         }
 
-        /* 差額：中綠背景、紅色字、自動計算 */
+        /* 第三列：差額 */
         .row-diff { 
             background-color: #c8e6c9; 
             color: #d32f2f; 
