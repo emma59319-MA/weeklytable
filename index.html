@@ -1,4 +1,174 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>週評鑑統計表_最終究極版</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        body { font-family: 'Microsoft JhengHei', sans-serif; background-color: #f4f7f4; padding: 10px 20px; color: #333; }
+        .container { max-width: 1500px; margin: 0 auto; background-color: #fff; padding: 15px 30px 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; position: relative; }
+        
+        /* 一鍵截圖按鈕維持原樣 */
+        .screenshot-btn { position: fixed; top: 15px; right: 20px; background-color: #2e7d32; color: white; border: none; padding: 10px 22px; font-size: 14pt; font-weight: bold; border-radius: 50px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s; }
+        .screenshot-btn:hover { background-color: #1b5e20; transform: scale(1.05); }
+
+        /* 主標題維持 43pt */
+        h1 { text-align: center; color: #2e7d32; margin-bottom: 5px; font-size: 43pt; font-weight: 900; }
+
+        /* 右側日期維持 18pt 無底線，並加入特定類別供截圖識別 */
+        .week-input { text-align: right; margin-bottom: 15px; font-size: 18pt; color: #2e7d32; font-weight: bold; display: flex; align-items: center; justify-content: flex-end; }
+        .week-input input { padding: 5px; border: none; width: 70px; text-align: center; font-size: 18pt; outline: none; background: transparent; color: #2e7d32; }
+
+        /* 表格維持原樣 */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; table-layout: fixed; }
+        th, td { border: 1px solid #2e7d32; text-align: center; padding: 9px 5px; word-wrap: break-word; line-height: 1.2; }
+        
+        /* 標題列樣式 */
+        thead tr th { background-color: #2e7d32; color: white; font-weight: bold; font-size: 10pt; height: 40px; border: 1px solid white; }
+        
+        .name-header { width: 60px; }
+        .plan-header { width: 140px; font-weight: bold; }
+
+        /* 輸入字型维持 14pt */
+        td[contenteditable="true"] { cursor: text; font-size: 14pt; outline: none; min-height: 24px; text-align: center; }
+        td[contenteditable="true"]:focus { background-color: #fffde7; }
+
+        /* 三色階層顏色維持原樣 */
+        .row-expect { background-color: #ffffff; color: #333; }
+        .row-expect .plan-cell { color: #2e7d32; }
+
+        .row-actual { background-color: #e8f5e9; color: #8B4513; } /* 實際達成：淡綠背，咖啡字 */
+
+        .row-diff { background-color: #c8e6c9; color: #d32f2f; font-weight: bold; } /* 差額：中綠背，紅字 */
+
+        .hide-for-screenshot { display: none !important; }
+    </style>
+</head>
+<body>
+
+<button class="screenshot-btn" id="screenshotBtn" onclick="takeScreenshot()">📸 一鍵截圖並儲存</button>
+
+<div class="container" id="captureArea">
+    <h1>週評鑑統計表</h1>
+    
+    <div class="week-input">
+        <input type="text" class="date-input" inputmode="numeric" placeholder="____"> 月 第 <input type="text" class="date-input" inputmode="numeric" placeholder="____"> 週
+    </div>
+
+    <div id="table-app"></div>
+
+    <script>
+        const app = document.getElementById('table-app');
+        // 生成 10 個人員表格
+        for (let i = 1; i <= 10; i++) {
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr><th class="name-header">姓名</th><th class="plan-header">計畫</th><th>參訓率<br>(8:30前)</th><th>問卷</th><th>拜訪量</th><th>FYC<br>合計</th><th>FYP<br>合計</th><th>建議書</th><th>轉介</th><th>增員<br>人次</th><th>講座<br>邀約</th><th>收入目標<br>(/月)</th><th>件數<br>(/月)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row-expect">
+                            <td class="name-cell editable-target" rowspan="3" contenteditable="true"></td>
+                            <td class="plan-cell">預計安排</td>
+                            ${'<td contenteditable="true" class="in-cell editable-target" inputmode="decimal" oninput="run(this)"></td>'.repeat(11)}
+                        </tr>
+                        <tr class="row-actual">
+                            <td class="plan-cell">實際達成</td>
+                            ${'<td contenteditable="true" class="in-cell editable-target" inputmode="decimal" oninput="run(this)"></td>'.repeat(11)}
+                        </tr>
+                        <tr class="row-diff"><td class="plan-cell">差額</td>${'<td></td>'.repeat(11)}</tr>
+                    </tbody>
+                </table>
+            `;
+            app.insertAdjacentHTML('beforeend', tableHTML);
+        }
+
+        // 計算邏輯维持原樣
+        function run(cell) {
+            const tbl = cell.closest('table');
+            const rowE = tbl.querySelector('.row-expect');
+            const rowA = tbl.querySelector('.row-actual');
+            const rowD = tbl.querySelector('.row-diff');
+            const inE = Array.from(rowE.querySelectorAll('.in-cell'));
+            const inA = Array.from(rowA.querySelectorAll('.in-cell'));
+            const outD = Array.from(rowD.querySelectorAll('td:not(.plan-cell):not(.name-cell)'));
+
+            inE.forEach((eInput, idx) => {
+                let eStr = eInput.innerText.trim();
+                let aStr = inA[idx].innerText.trim();
+                let eV = parseFloat(eStr.replace(/[,%]/g, ''));
+                let aV = parseFloat(aStr.replace(/[,%]/g, ''));
+
+                if (!isNaN(eV) || !isNaN(aV)) {
+                    let res = Math.round(((eV || 0) - (aV || 0)) * 100) / 100;
+                    let sfx = (eStr.includes('%') || aStr.includes('%')) ? '%' : '';
+                    outD[idx].innerText = (eStr === "" && aStr === "") ? "" : res + sfx;
+                } else {
+                    outD[idx].innerText = "";
+                }
+            });
+        }
+
+        // 最終究極解決方案：全靜態轉換截圖
+        async function takeScreenshot() {
+            const btn = document.getElementById('screenshotBtn');
+            const area = document.getElementById('captureArea');
+            if (document.activeElement) document.activeElement.blur();
+            btn.classList.add('hide-for-screenshot');
+
+            // 給予短暫延遲確保 iPad 收起鍵盤
+            await new Promise(r => setTimeout(r, 100));
+
+            // 📸 究極修正：深度掃描並強制轉換內容
+            html2canvas(area, {
+                backgroundColor: "#f4f7f4",
+                scale: 2, 
+                useCORS: true,
+                logging: false,
+                onclone: (clonedDoc) => {
+                    const clonedArea = clonedDoc.getElementById('captureArea');
+
+                    // 1. 強制同步月份與週別輸入框 (input -> span)
+                    clonedArea.querySelectorAll('.date-input').forEach(inp => {
+                        const staticSpan = clonedDoc.createElement('span');
+                        staticSpan.innerText = inp.value || inp.getAttribute('placeholder').trim();
+                        staticSpan.style.cssText = inp.style.cssText + "; display: inline-block; width: 70px; text-align: center; color: #2e7d32; font-size: 18pt;";
+                        inp.parentNode.replaceChild(staticSpan, inp);
+                    });
+
+                    // 2. 強制同步姓名格與數據數據輸入格 (td editable -> td static with text)
+                    // 這一步解決了 WebKit 偶爾丟失克隆 DOM 內容的問題
+                    const originalEditables = document.querySelectorAll('.editable-target');
+                    clonedArea.querySelectorAll('.editable-target').forEach((clonedEl, idx) => {
+                        const originalText = originalEditables[idx].innerText.trim();
+                        clonedEl.removeAttribute('contenteditable');
+                        // 雖然 html2canvas 應該會讀取 innerText，但手動寫死 innerHTML 更穩
+                        clonedEl.innerHTML = originalText;
+                        clonedEl.style.fontSize = '14pt';
+                        // 確保姓名格維持置中垂直對齊 (rowspan)
+                        if (clonedEl.classList.contains('name-cell')) {
+                            clonedEl.style.verticalAlign = 'middle';
+                        }
+                    });
+                }
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = '週評鑑統計表_' + new Date().toISOString().slice(0, 10) + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                btn.classList.remove('hide-for-screenshot');
+            }).catch(err => {
+                console.error("截圖發生錯誤:", err);
+                btn.classList.remove('hide-for-screenshot');
+            });
+        }
+    </script>
+</div>
+
+</body>
+</html>
+
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
